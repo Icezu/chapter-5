@@ -19,7 +19,14 @@ function connectRabbit() {
         .then(connection => {
             console.log("Connected to RabbitMQ.");
 
-            return connection.createChannel(); // Create a RabbitMQ messaging channel.
+            return connection.createChannel()
+                .then(messageChannel => {
+                    return messageChannel.assertExchange(
+                        "viewed", "fanout")
+                        .then(() => {
+                            return messageChannel;
+                        });
+                }); // Create a RabbitMQ messaging channel.
         });
 }
 
